@@ -25,6 +25,7 @@ function App() {
   const fetchProducts = async (query = '', page = 1) => {
     setLoading(true);
     try {
+      console.log('Fetching products with params:', { query, page, sortBy, sortOrder });
       const params = {
         query,
         page,
@@ -34,13 +35,27 @@ function App() {
       };
 
       const response = await productsAPI.search(params);
-      setProducts(response.data.products);
-      setTotalPages(response.data.pages);
+      console.log('API Response:', response.data);
+      
+      if (response.data.success) {
+        setProducts(response.data.products || []);
+        setTotalPages(response.data.pages || 1);
+      } else {
+        console.error('API returned error:', response.data.message);
+        setProducts([]);
+        setTotalPages(1);
+      }
       setCurrentPage(page);
     } catch (error) {
       console.error('Error fetching products:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
       // Show empty state when API fails
       setProducts([]);
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
@@ -187,7 +202,18 @@ function App() {
               <div className="text-center py-12">
                 <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-                <p className="text-gray-500">Try adjusting your search or filters</p>
+                <p className="text-gray-500">
+                  {searchQuery ? 
+                    `No results for "${searchQuery}". Try a different search term.` : 
+                    'No products available. Make sure the backend is running and database is seeded.'
+                  }
+                </p>
+                <button 
+                  onClick={() => fetchProducts()}
+                  className="mt-4 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+                >
+                  Retry
+                </button>
               </div>
             )}
           </div>
