@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const { connectDB } = require('./config/db.connect');
 const Product = require('./models/product.model');
 require('dotenv').config();
 
@@ -103,15 +103,15 @@ const sampleProducts = [
 
 async function seedDatabase() {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('Connected to MongoDB');
+    await connectDB();
+    console.log('Connected to SQLite database');
     
     // Clear existing products
-    await Product.deleteMany({});
+    await Product.destroy({ where: {} });
     console.log('Cleared existing products');
     
     // Insert sample products
-    await Product.insertMany(sampleProducts);
+    await Product.bulkCreate(sampleProducts);
     console.log('Sample products inserted successfully');
     
     process.exit(0);

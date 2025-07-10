@@ -1,20 +1,29 @@
-const mongoose = require("mongoose");
-require("dotenv").config(); 
+const { Sequelize } = require('sequelize');
+require('dotenv').config(); 
+
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: process.env.DB_PATH || './database.sqlite',
+    logging: false, // Set to console.log to see SQL queries
+});
 
 const connectDB = async () => {
     try {
-        console.log('Attempting to connect to MongoDB...');
-        console.log('MongoDB URI:', process.env.MONGO_URI ? 'Set' : 'Not set');
+        console.log('Attempting to connect to SQLite database...');
+        console.log('Database path:', process.env.DB_PATH || './database.sqlite');
         
-        await mongoose.connect(process.env.MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log("✅ MongoDB connected successfully");
+        await sequelize.authenticate();
+        console.log("✅ SQLite database connected successfully");
+        
+        // Sync all models
+        await sequelize.sync();
+        console.log("✅ Database models synchronized");
+        
+        return sequelize;
     } catch (error) {
-        console.error("MongoDB connection error:", error);
+        console.error("Database connection error:", error);
         process.exit(1);
     }
 };
 
-module.exports = connectDB;
+module.exports = { connectDB, sequelize };

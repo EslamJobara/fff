@@ -1,43 +1,31 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db.connect');
 
-const productSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  price: {
-    type: Number, 
-    required: true,
-    min: 0
-  },
-  image: {
-    type: String,
-    default: 'https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg'
-  },
-  description: {
-    product_name: String,
-    scientific_name: String,
-    belongs_to: String,
-    mechanism_of_action: String,
-    medical_uses: [String],
-    usage_instructions: [String],
-    side_effects: [String],
-    pregnancy_breastfeeding: String,
-    helpful_tips: [String],
-    warnings_precautions: [String],
-    storage_instructions: [String],
-    more_information: String
-  }
+const Product = sequelize.define('Product', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
+    },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    description: {
+        type: DataTypes.JSON,
+        allowNull: true
+    }
 }, {
-  timestamps: true
+    tableName: 'products',
+    timestamps: true
 });
 
-
-productSchema.index({
-  name: 'text',
-  'description.product_name': 'text',
-  'description.scientific_name': 'text'
-});
-
-module.exports = mongoose.model('Product', productSchema);
+module.exports = Product;
