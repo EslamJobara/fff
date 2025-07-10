@@ -64,9 +64,11 @@ const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
             <span className="text-xl font-bold text-primary-600">
               ${price?.toFixed(2) || '0.00'}
             </span>
-            <span className="text-sm text-gray-500 line-through ml-2">
-              ${(price * 1.2)?.toFixed(2)}
-            </span>
+            {price && (
+              <span className="text-sm text-gray-500 line-through ml-2">
+                ${(price * 1.2).toFixed(2)}
+              </span>
+            )}
           </div>
         </div>
 

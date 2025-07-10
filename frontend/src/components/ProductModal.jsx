@@ -68,6 +68,11 @@ const ProductModal = ({ product, isOpen, onClose, onAddToCart }) => {
               <div className="text-3xl font-bold text-primary-600">
                 ${price?.toFixed(2)}
               </div>
+              {price && (
+                <div className="text-lg text-gray-500 line-through">
+                  Was: ${(price * 1.2).toFixed(2)}
+                </div>
+              )}
             </div>
 
             {/* Mechanism of Action */}
