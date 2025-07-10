@@ -2,6 +2,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const Product = require('../models/product.model');
 
 const searchProducts = asyncHandler(async (req, res) => {
+  console.log('Search products called with query:', req.query);
   const { query, page = 1, limit = 10, sort = 'name', order = 'asc' } = req.query;
 
 //-----------------------  search query ------------------------//
@@ -39,6 +40,8 @@ const searchProducts = asyncHandler(async (req, res) => {
       .limit(limitNum);
 
     const total = await Product.countDocuments(searchQuery);
+    
+    console.log(`Found ${products.length} products out of ${total} total`);
 
     res.json({
       products,

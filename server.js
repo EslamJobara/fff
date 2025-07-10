@@ -15,7 +15,19 @@ app.use(globalMiddleware);
 
 // Routes
 app.get('/', (req, res) => {
-    res.send('API is running..');
+    res.json({ 
+        message: 'MediCare API is running successfully!',
+        timestamp: new Date().toISOString(),
+        endpoints: {
+            products: '/api/products/search',
+            productById: '/api/products/:id'
+        }
+    });
+});
+
+// Test endpoint
+app.get('/api/test', (req, res) => {
+    res.json({ message: 'API test successful', timestamp: new Date().toISOString() });
 });
 
 app.use('/api/products', productRoutes);
